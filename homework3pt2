@@ -1,0 +1,58 @@
+# -*- coding: utf-8 -*-
+"""
+Spyder Editor
+
+This is a temporary script file.
+"""
+
+from sec_api import QueryApi
+
+
+from sec_api import ExtractorApi
+
+import pandas as pd
+import json
+
+queryApi = QueryApi(api_key="3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")
+
+query = {
+  "query": { "query_string": { 
+      "query": "ticker:TSLA AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
+    } },
+  "from": "0",
+  "size": "10",
+  "sort": [{ "filedAt": { "order": "desc" } }]
+}
+
+filings = queryApi.get_filings(query)
+
+#print(filings)
+
+
+df =pd.json_normalize(filings['filings'])
+df.drop(df[df['formType'] != '10-K'].index, inplace=True)
+# df.reset_index
+
+for i in df.index:
+    #print url
+    url_10K = df['linkToFilingDetails'][i]
+    print(url_10K)
+    #print(i)
+    
+    
+    
+
+
+# %% 10-Q extract item 2 
+
+extractorApi = ExtractorApi("3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")   
+#filing_url_10q = "https://www.sec.gov/Archives/edgar/data/1318605/000156459020047486/tsla-10q_20200930.htm"
+filing_url = df['linkToFilingDetails'][1]
+print(filing_url)
+section_10K_item7 = extractorApi.get_section(filing_url, "7", "text")
+
+### Problem: Return "undefined"
+print(section_10K_item7)
+
+with open('C:\\Users\\caarrick\\10K\\TSLA_10K_item7.txt', 'w') as f:
+    f.write(section_10K_item7)
