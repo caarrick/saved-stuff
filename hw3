@@ -1,0 +1,122 @@
+from sec_api import QueryApi
+
+
+from sec_api import ExtractorApi
+
+import pandas as pd
+import json
+
+queryApi = QueryApi(api_key="3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")
+
+query = {
+  "query": { "query_string": { 
+      "query": "ticker:TSLA AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
+    } },
+  "from": "0",
+  "size": "10",
+  "sort": [{ "filedAt": { "order": "desc" } }]
+}
+
+filings = queryApi.get_filings(query)
+
+#print(filings)
+
+
+df =pd.json_normalize(filings['filings'])
+df.drop(df[df['formType'] != '10-K'].index, inplace=True)
+# df.reset_index
+
+for i in df.index:
+    #print url
+    url_10K = df['linkToFilingDetails'][i]
+    print(url_10K)
+    #print(i)
+    
+    
+    
+
+
+# %% 10-Q extract item 2 
+
+extractorApi = ExtractorApi("3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")   
+#filing_url_10k = "https://www.sec.gov/Archives/edgar/data/1318605/000156459020047486/tsla-10q_20200930.htm"
+filing_url = df['linkToFilingDetails'][1]
+print(filing_url)
+section_10K_item7 = extractorApi.get_section(filing_url, "7", "text")
+
+### Problem: Return "undefined"
+print(section_10K_item7)
+
+with open('C:\\Users\\caarrick\\10K\\TSLA_10K_item7.txt', 'w') as f:
+    f.write(section_10K_item7)
+    
+# %%
+extractorApi = ExtractorApi("3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")   
+#filing_url_10k = "https://www.sec.gov/ix?doc=/Archives/edgar/data/0001318605/000156459020018984/tsla-10ka_20191231.htm"
+filing_url = df['linkToFilingDetails'][1]
+print(filing_url)
+section_10K_item7 = extractorApi.get_section(filing_url, "7", "text")
+
+### Problem: Return "undefined"
+print(section_10K_item7)
+
+with open('C:\\Users\\caarrick\\10K\\TSLA_10K_item7.txt', 'w') as f:
+    f.write(section_10K_item7)
+    
+# %%
+extractorApi = ExtractorApi("3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")   
+#filing_url_10k = "https://www.sec.gov/Archives/edgar/data/0001318605/000156459019003165/tsla-10k_20181231.htm"
+filing_url = df['linkToFilingDetails'][1]
+print(filing_url)
+section_10K_item7 = extractorApi.get_section(filing_url, "7", "text")
+
+### Problem: Return "undefined"
+print(section_10K_item7)
+
+with open('C:\\Users\\caarrick\\10K\\TSLA_10K_item7.txt', 'w') as f:
+    f.write(section_10K_item7)
+
+    
+# %%
+Text to Sentences using NLTK
+''' NLTK text to sentences'''
+def txt2sentence(txt):
+    '''file to sentence using NLTK'''
+    import nltk
+    nltk.download('punkt')
+    from nltk.tokenize import sent_tokenize
+    sentences = sent_tokenize(txt)
+    df=pd.DataFrame(sentences)
+    return df
+
+    
+
+
+# %% load packages
+import nltk
+''' if needed, download punkt'''
+nltk.download('punkt')
+from nltk.tokenize import sent_tokenize
+import os
+import pandas as pd
+
+
+
+# %% Set up working folder and test its existence
+# For better examples: https://www3.ntu.edu.sg/home/ehchua/programming/webprogramming/Python_FileText.html
+
+folder="C:\\Users\\caarrick\\Data\\10K"
+exist=os.path.exists(folder)
+print(exist)
+print(folder)
+
+# %% Load the text file to a string variable
+file=open(folder+"\\TSLA_10k_item7.txt",encoding="latin-1")
+text=file.read()
+
+print(text[0:500])
+
+# %% Tokenize 
+df_sentence = txt2sentence(text)
+
+df_sentence.to_csv(folder+"\\tsla7a_processed.csv") 
