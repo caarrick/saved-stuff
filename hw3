@@ -1,3 +1,199 @@
+# -*- coding: utf-8 -*-
+"""
+Spyder Editor
+
+This is a temporary script file.
+"""
+
+# To add a new cell, type '# %%'
+# To add a new markdown cell, type '# %% [markdown]'
+# %%
+import pandas as pd
+import numpy as np 
+
+import statsmodels.formula.api as sm # module for stats models
+from statsmodels.iolib.summary2 import summary_col # module for presenting stats models outputs nicely
+
+# %%
+!pip3 install pandas-datareader
+
+
+
+# %%
+def price2ret(prices,retType='simple'):
+    if retType == 'simple':
+        ret = (prices/prices.shift(1))-1
+    else:
+        ret = np.log(prices/prices.shift(1))
+    return ret
+
+
+# %%
+def assetPriceReg(df_stk):
+    import pandas_datareader.data as web  # module for reading datasets directly from the web
+    
+    # Reading in factor data
+    df_factors = web.DataReader('F-F_Research_Data_5_Factors_2x3_daily', 'famafrench')[0]
+    df_factors.rename(columns={'Mkt-RF': 'MKT'}, inplace=True)
+    df_factors['MKT'] = df_factors['MKT']/100
+    df_factors['SMB'] = df_factors['SMB']/100
+    df_factors['HML'] = df_factors['HML']/100
+    df_factors['RMW'] = df_factors['RMW']/100
+    df_factors['CMA'] = df_factors['CMA']/100
+    
+    df_stock_factor = pd.merge(df_stk,df_factors,left_index=True,right_index=True) # Merging the stock and factor returns dataframes together
+    df_stock_factor['XsRet'] = df_stock_factor['Returns'] - df_stock_factor['RF'] # Calculating excess returns
+
+    # Running CAPM, FF3, and FF5 models.
+    CAPM = sm.ols(formula = 'XsRet ~ MKT', data=df_stock_factor).fit(cov_type='HAC',cov_kwds={'maxlags':1})
+    FF3 = sm.ols( formula = 'XsRet ~ MKT + SMB + HML', data=df_stock_factor).fit(cov_type='HAC',cov_kwds={'maxlags':1})
+    FF5 = sm.ols( formula = 'XsRet ~ MKT + SMB + HML + RMW + CMA', data=df_stock_factor).fit(cov_type='HAC',cov_kwds={'maxlags':1})
+
+    CAPMtstat = CAPM.tvalues
+    FF3tstat = FF3.tvalues
+    FF5tstat = FF5.tvalues
+
+    CAPMcoeff = CAPM.params
+    FF3coeff = FF3.params
+    FF5coeff = FF5.params
+
+    # DataFrame with coefficients and t-stats
+    results_df = pd.DataFrame({'CAPMcoeff':CAPMcoeff,'CAPMtstat':CAPMtstat,
+                               'FF3coeff':FF3coeff, 'FF3tstat':FF3tstat,
+                               'FF5coeff':FF5coeff, 'FF5tstat':FF5tstat},
+    index = ['Intercept', 'MKT', 'SMB', 'HML', 'RMW', 'CMA'])
+
+
+    dfoutput = summary_col([CAPM,FF3, FF5],stars=True,float_format='%0.4f',
+                  model_names=['CAPM','FF3','FF5'],
+                  info_dict={'N':lambda x: "{0:d}".format(int(x.nobs)),
+                             'Adjusted R2':lambda x: "{:.4f}".format(x.rsquared_adj)}, 
+                             regressor_order = ['Intercept', 'MKT', 'SMB', 'HML', 'RMW', 'CMA'])
+
+    print(dfoutput)
+    
+    return results_df
+
+
+# %%
+from pathlib import Path
+import sys
+import os
+
+home = str(Path.home())
+print(home)
+
+
+# %%
+
+
+if sys.platform == 'linux':
+    inputDir = '/datasets/stocks/' 
+elif sys.platform == 'win32':
+    inputDir = '\\datasets\stocks\\' 
+else :
+    inputDir = '/datasets/stocks/'
+    
+fullDir = home+inputDir
+print(fullDir)
+
+for i in df.index:
+    #print df_stk
+    df_stk = df['linkToFilingDetails'][i]
+    print(df_skt)
+    #print(i)
+
+
+# %%
+stkName = 'KHC'
+fileName = 'stk_' + stkName + '.csv'
+readFile = fullDir+fileName 
+
+df_stk = pd.read_csv("C:/Users/caarrick/datasets/stocks/df_stk_.csv")
+df_stk.head()
+
+df_stk['KHC Returns'] = price2ret(df_stk[['Close']])
+df_stk = df_stk.dropna()
+df_stk.head()
+
+# %%
+stkName = 'ULTA'
+fileName = 'stk_' + stkName + '.csv'
+readFile = fullDir+fileName 
+
+df_stk = pd.read_csv("C:/Users/caarrick/datasets/stocks/df_stk_2.csv")
+df_stk.head()
+
+df_stk['ULTA Returns'] = price2ret(df_stk[['Close']])
+df_stk = df_stk.dropna()
+df_stk.head()
+
+# %%
+stkName = 'TGT'
+fileName = 'stk_' + stkName + '.csv'
+readFile = fullDir+fileName 
+
+df_stk = pd.read_csv("C:/Users/caarrick/datasets/stocks/df_stk_3.csv")
+df_stk.head() 
+
+df_stk['TGT Returns'] = price2ret(df_stk[['Close']])
+df_stk = df_stk.dropna()
+df_stk.head()
+
+# %%
+stkName = 'WMT'
+fileName = 'stk_' + stkName + '.csv'
+readFile = fullDir+fileName 
+
+df_stk = pd.read_csv("C:/Users/caarrick/datasets/stocks/df_stk_4.csv")
+df_stk.head()
+
+df_stk['WMT Returns'] = price2ret(df_stk[['Close']])
+df_stk = df_stk.dropna()
+df_stk.head()
+
+# %%
+stkName = 'GIS'
+fileName = 'stk_' + stkName + '.csv'
+readFile = fullDir+fileName 
+
+df_stk = pd.read_csv("C:/Users/caarrick/datasets/stocks/df_stk_5.csv")
+df_stk.head()
+
+df_stk['GIS Returns'] = price2ret(df_stk[['Close']])
+df_stk = df_stk.dropna()
+df_stk.head()
+
+
+# %%
+df_stk.drop(['Volume'],axis=1,inplace=True)
+df_stk.plot()
+
+
+# %%
+df_stk['Returns'] = price2ret(df_stk[['Adj Close']])
+df_stk = df_stk.dropna()
+df_stk.head()
+
+
+# %%
+df_stk['Returns'].plot()
+
+
+# %%
+df_stk['Returns'].hist(bins=20)
+
+
+# %%
+df_regOutput = assetPriceReg(df_stk)
+xlsfile=fullDir+stkName+'_CAPM_FF.xlsx'
+print(xlsfile)
+
+# %% output model
+df_regOutput.to_excel(xlsfile)
+
+# %%
+
 from sec_api import QueryApi
 
 
@@ -10,7 +206,7 @@ queryApi = QueryApi(api_key="3d6c989f663effa78060b723678597151fc092d3f88899f0435
 
 query = {
   "query": { "query_string": { 
-      "query": "ticker:TSLA AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
+      "query": "ticker:KHC AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
     } },
   "from": "0",
   "size": "10",
@@ -39,7 +235,7 @@ for i in df.index:
 # %% 10-Q extract item 2 
 
 extractorApi = ExtractorApi("3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")   
-#filing_url_10k = "https://www.sec.gov/Archives/edgar/data/1318605/000156459020047486/tsla-10q_20200930.htm"
+#filing_url_10k = ""
 filing_url = df['linkToFilingDetails'][1]
 print(filing_url)
 section_10K_item7 = extractorApi.get_section(filing_url, "7", "text")
@@ -47,76 +243,5 @@ section_10K_item7 = extractorApi.get_section(filing_url, "7", "text")
 ### Problem: Return "undefined"
 print(section_10K_item7)
 
-with open('C:\\Users\\caarrick\\10K\\TSLA_10K_item7.txt', 'w') as f:
+with open('C:\\Users\\caarrick\\10K\\KHC_10K_item7.txt', 'w') as f:
     f.write(section_10K_item7)
-    
-# %%
-extractorApi = ExtractorApi("3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")   
-#filing_url_10k = "https://www.sec.gov/ix?doc=/Archives/edgar/data/0001318605/000156459020018984/tsla-10ka_20191231.htm"
-filing_url = df['linkToFilingDetails'][1]
-print(filing_url)
-section_10K_item7 = extractorApi.get_section(filing_url, "7", "text")
-
-### Problem: Return "undefined"
-print(section_10K_item7)
-
-with open('C:\\Users\\caarrick\\10K\\TSLA_10K_item7.txt', 'w') as f:
-    f.write(section_10K_item7)
-    
-# %%
-extractorApi = ExtractorApi("3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")   
-#filing_url_10k = "https://www.sec.gov/Archives/edgar/data/0001318605/000156459019003165/tsla-10k_20181231.htm"
-filing_url = df['linkToFilingDetails'][1]
-print(filing_url)
-section_10K_item7 = extractorApi.get_section(filing_url, "7", "text")
-
-### Problem: Return "undefined"
-print(section_10K_item7)
-
-with open('C:\\Users\\caarrick\\10K\\TSLA_10K_item7.txt', 'w') as f:
-    f.write(section_10K_item7)
-
-    
-# %%
-Text to Sentences using NLTK
-''' NLTK text to sentences'''
-def txt2sentence(txt):
-    '''file to sentence using NLTK'''
-    import nltk
-    nltk.download('punkt')
-    from nltk.tokenize import sent_tokenize
-    sentences = sent_tokenize(txt)
-    df=pd.DataFrame(sentences)
-    return df
-
-    
-
-
-# %% load packages
-import nltk
-''' if needed, download punkt'''
-nltk.download('punkt')
-from nltk.tokenize import sent_tokenize
-import os
-import pandas as pd
-
-
-
-# %% Set up working folder and test its existence
-# For better examples: https://www3.ntu.edu.sg/home/ehchua/programming/webprogramming/Python_FileText.html
-
-folder="C:\\Users\\caarrick\\Data\\10K"
-exist=os.path.exists(folder)
-print(exist)
-print(folder)
-
-# %% Load the text file to a string variable
-file=open(folder+"\\TSLA_10k_item7.txt",encoding="latin-1")
-text=file.read()
-
-print(text[0:500])
-
-# %% Tokenize 
-df_sentence = txt2sentence(text)
-
-df_sentence.to_csv(folder+"\\tsla7a_processed.csv") 
