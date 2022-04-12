@@ -11,7 +11,7 @@ queryApi = QueryApi(api_key="3d6c989f663effa78060b723678597151fc092d3f88899f0435
 
 query = {
   "query": { "query_string": { 
-      "query": "ticker: KHC AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-k\"" 
+      "query": "ticker: KHC AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-K\"" 
     } },
   "from": "0",
   "size": "10",
@@ -35,19 +35,19 @@ for i in df.index:
     #print(i)
 
 
-# %% 10-Q extract item 2 
+# %% 10-K extract item 7
 
 extractorApi = ExtractorApi("3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")   
-#filing_url_10q = "https://www.sec.gov/ix?doc=/Archives/edgar/data/1637459/000163745922000018/khc-20211225.htm"
+#filing_url_10q = https://www.sec.gov/ix?doc=/Archives/edgar/data/1637459/000163745922000018/khc-20211225.htm"
 filing_url = df['linkToFilingDetails'][1]
 print(filing_url)
 section_10k_item7 = extractorApi.get_section(filing_url, "7", "text")
 
 ### Problem: Return "undefined"
-print(section_10k_item7)
+print(section_10K_item7)
 
-with open('C:\\Users\\caarrick\\10K\\KHC_10K_item7.txt', 'w') as f:
-    f.write(section_10k_item7)
+with open('C:\\Users\\caarrick\\Data\\10K\\KHC_10K_item7.txt', 'w') as f:
+    f.write(section_10K_item7)
     
     # %%
     
@@ -60,7 +60,7 @@ with open('C:\\Users\\caarrick\\10K\\KHC_10K_item7.txt', 'w') as f:
 
     query = {
       "query": { "query_string": { 
-          "query": "ticker: KHC AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-k\"" 
+          "query": "ticker: ULTA AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-k\"" 
         } },
       "from": "0",
       "size": "10",
@@ -86,17 +86,17 @@ with open('C:\\Users\\caarrick\\10K\\KHC_10K_item7.txt', 'w') as f:
 
     # %% 10-Q extract item 2 
 
-    extractorApi = ExtractorApi("3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")   
-    #filing_url_10q = "https://www.sec.gov/Archives/edgar/data/1318605/000156459020047486/tsla-10q_20200930.htm"
-    filing_url = df['linkToFilingDetails'][1]
-    print(filing_url)
-    section_10k_item7 = extractorApi.get_section(filing_url, "7", "text")
+extractorApi = ExtractorApi("3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")   
+#filing_url_10q = "https://www.sec.gov/ix?doc=/Archives/edgar/data/1403568/000155837022004330/ulta-20220129x10k.htm"
+filing_url = df['linkToFilingDetails'][1]
+print(filing_url)
+section_10k_item7 = extractorApi.get_section(filing_url, "7", "text")
 
-    ### Problem: Return "undefined"
-    print(section_10k_item7)
+### Problem: Return "undefined"
+print(section_10k_item7)
 
-    with open('C:\\Users\\caarrick\\10K\\ULTA_10K_item7.txt', 'w') as f:
-        f.write(section_10k_item7)
+with open('C:\\Users\\caarrick\\Data\\10K\\ULTA_10K_item7.txt', 'w') as f:
+    f.write(section_10k_item7)
         
         # %%
         
@@ -109,7 +109,7 @@ with open('C:\\Users\\caarrick\\10K\\KHC_10K_item7.txt', 'w') as f:
 
         query = {
           "query": { "query_string": { 
-              "query": "ticker: KHC AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-k\"" 
+              "query": "ticker: WMT AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-k\"" 
             } },
           "from": "0",
           "size": "10",
@@ -136,7 +136,7 @@ with open('C:\\Users\\caarrick\\10K\\KHC_10K_item7.txt', 'w') as f:
         # %% 10-Q extract item 2 
 
         extractorApi = ExtractorApi("3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")   
-        #filing_url_10q = "https://www.sec.gov/Archives/edgar/data/1318605/000156459020047486/tsla-10q_20200930.htm"
+        #filing_url_10q = "https://www.sec.gov/ix?doc=/Archives/edgar/data/104169/000010416922000012/wmt-20220131.htm"
         filing_url = df['linkToFilingDetails'][1]
         print(filing_url)
         section_10k_item7 = extractorApi.get_section(filing_url, "7", "text")
@@ -144,7 +144,7 @@ with open('C:\\Users\\caarrick\\10K\\KHC_10K_item7.txt', 'w') as f:
         ### Problem: Return "undefined"
         print(section_10k_item7)
 
-        with open('C:\\Users\\caarrick\\10K\\WMT_10K_item7.txt', 'w') as f:
+        with open('C:\\Users\\caarrick\\Data\\10K\\WMT_10K_item7.txt', 'w') as f:
             f.write(section_10k_item7)
             
 # %% 
@@ -158,7 +158,7 @@ queryApi = QueryApi(api_key="3d6c989f663effa78060b723678597151fc092d3f88899f0435
 
 query = {
   "query": { "query_string": { 
-      "query": "ticker: KHC AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-k\"" 
+      "query": "ticker: TGT AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-k\"" 
     } },
   "from": "0",
   "size": "10",
@@ -185,7 +185,7 @@ for i in df.index:
 # %% 10-Q extract item 2 
 
 extractorApi = ExtractorApi("3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")   
-#filing_url_10q = "https://www.sec.gov/Archives/edgar/data/1318605/000156459020047486/tsla-10q_20200930.htm"
+#filing_url_10q = "https://www.sec.gov/ix?doc=/Archives/edgar/data/27419/000002741922000007/tgt-20220129.htm"
 filing_url = df['linkToFilingDetails'][1]
 print(filing_url)
 section_10k_item7 = extractorApi.get_section(filing_url, "7", "text")
@@ -193,7 +193,7 @@ section_10k_item7 = extractorApi.get_section(filing_url, "7", "text")
 ### Problem: Return "undefined"
 print(section_10k_item7)
 
-with open('C:\\Users\\caarrick\\10K\\TGT_10K_item7.txt', 'w') as f:
+with open('C:\\Users\\caarrick\\Data\\10K\\TGT_10K_item7.txt', 'w') as f:
     f.write(section_10k_item7)
     
 # %%
@@ -207,7 +207,7 @@ queryApi = QueryApi(api_key="3d6c989f663effa78060b723678597151fc092d3f88899f0435
 
 query = {
   "query": { "query_string": { 
-      "query": "ticker: KHC AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-k\"" 
+      "query": "ticker: GIS AND filedAt:{2020-01-01 TO 2020-12-31} AND formType:\"10-k\"" 
     } },
   "from": "0",
   "size": "10",
@@ -234,7 +234,7 @@ for i in df.index:
 # %% 10-Q extract item 2 
 
 extractorApi = ExtractorApi("3d6c989f663effa78060b723678597151fc092d3f88899f0435ce4b1f7c7f3e5")   
-#filing_url_10q = "https://www.sec.gov/Archives/edgar/data/1318605/000156459020047486/tsla-10q_20200930.htm"
+#filing_url_10q = "https://www.sec.gov/ix?doc=/Archives/edgar/data/40704/000119312521204830/d184854d10k.htm"
 filing_url = df['linkToFilingDetails'][1]
 print(filing_url)
 section_10k_item7 = extractorApi.get_section(filing_url, "7", "text")
